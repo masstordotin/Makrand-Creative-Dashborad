@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Makrand Honey — Content Command Centre V2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --h:#C97A0A;--hp:#FEF9EE;--hc:#FEF3DC;--hb:#E8C47A;--hd:#7C3D0A;
+  --f:#1D6A3A;--fp:#E8F5EE;--fb:#7EC99A;--fd:#0F3320;
+  --p:#4A35A0;--pp:#EEF0FB;--pb:#B0A8E0;
+  --wa:#0E7A5F;--wap:#E6F4EF;--wab:#8FD4BE;
+  --s:#fff;--s1:#FAFAF8;--s2:#F4F2EC;
+  --t:#1A1008;--t2:#5C5040;--t3:#9A8A72;
+  --bd:#E4DDD0;--bds:#C8B898;
+  --r:8px;--danger:#B91C1C;--dangerp:#FEF2F2;
+  --font:'DM Sans',-apple-system,sans-serif;
+  --mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:#EDE8DF;color:var(--t);min-height:100vh;font-size:14px}
+button{font-family:var(--font);cursor:pointer}
+
+.wrap{max-width:1080px;margin:0 auto;padding:1.25rem 1.25rem 5rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.875rem 1.25rem;background:var(--s);border-radius:14px;margin-bottom:.875rem;border:1px solid var(--bd);gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.bico{width:36px;height:36px;background:var(--h);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.bname{font-size:15px;font-weight:600}
+.bsub{font-size:11px;color:var(--t3);margin-top:1px}
+.nav{display:flex;background:var(--s2);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.ntab{padding:6px 14px;border:none;background:none;border-radius:8px;font-size:13px;font-weight:500;color:var(--t2);transition:all .15s;white-space:nowrap}
+.ntab.on{background:var(--s);color:var(--hd);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* ─── PHASE GATE ─── */
+.gate{background:var(--t);color:#fff;border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:1rem}
+.gate .glabel{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.55);white-space:nowrap}
+.gate .gnums{font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.gate input{width:56px;background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:2px 6px;font:inherit;font-size:12px;text-align:right}
+.gbar{flex:1;min-width:160px;height:10px;background:rgba(255,255,255,.15);border-radius:5px;overflow:visible;position:relative}
+.gfill{height:100%;background:linear-gradient(90deg,var(--hd),var(--h));border-radius:5px;transition:width .4s}
+.gmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;left:83.3%}
+.gmsg{font-size:12px;white-space:nowrap}
+.gmsg .win{color:#F3CE7E;font-weight:600}
+
+/* ─── STATS ─── */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1rem}
+.stat{background:var(--s);border:1px solid var(--bd);border-radius:12px;padding:11px 14px}
+.slabel{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;font-weight:600}
+.sval{font-size:21px;font-weight:600;line-height:1.1}
+.ssub{font-size:11px;color:var(--t3);margin-top:2px}
+
+/* ─── BALANCE STRIP ─── */
+.balance{background:var(--s);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:1rem}
+.bal-h{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--t2);margin-bottom:9px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.bal-h small{font-weight:400;color:var(--t3);text-transform:none;letter-spacing:0}
+.b-row{display:grid;grid-template-columns:70px 1fr 92px;gap:10px;align-items:center;font-size:12px;margin-bottom:6px}
+.b-row:last-child{margin-bottom:0}
+.b-track{height:9px;background:var(--s2);border-radius:5px;position:relative}
+.b-fill{height:100%;border-radius:5px;background:var(--h);transition:width .3s}
+.b-fill.off{background:var(--danger)}
+.b-target{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--t)}
+.b-num{color:var(--t3);text-align:right;font-family:var(--mono);font-size:11px}
+.b-num.off{color:var(--danger);font-weight:600}
+
+/* ─── TOOLBAR / BUTTONS ─── */
+.tbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;gap:8px;flex-wrap:wrap}
+.tbar-l{display:flex;align-items:center;gap:8px}
+.tbar-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.period{font-size:14px;font-weight:600}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;font-size:12px;font-weight:500;border:1px solid var(--bds);border-radius:var(--r);background:var(--s);color:var(--t);transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--s2)}
+.btn.ico{padding:6px 9px}
+.btn-h{background:var(--hc);color:var(--hd);border-color:var(--hb)}
+.btn-h:hover{background:#FDEABF}
+.btn-p{background:var(--h);color:#fff;border-color:var(--h)}
+.btn-p:hover{background:var(--hd)}
+.btn-d{background:var(--dangerp);color:var(--danger);border-color:#FECACA}
+.btn-g{background:var(--fp);color:var(--fd);border-color:var(--fb)}
+
+/* ─── WEEK GRID ─── */
+.wgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px;margin-bottom:1rem}
+.dcol{background:var(--s);border:1px solid var(--bd);border-radius:11px;padding:9px 8px;min-height:150px;display:flex;flex-direction:column;min-width:0}
+.dcol.today{border-color:var(--h);background:var(--hp)}
+.dhead{margin-bottom:6px}
+.dname{font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.dnum{font-size:17px;font-weight:600;line-height:1}
+.dcol.today .dname,.dcol.today .dnum{color:var(--hd)}
+.dtheme{font-size:9px;color:var(--t3);margin-top:2px}
+.chips{display:flex;flex-direction:column;gap:4px;margin-bottom:6px}
+.chip{font-size:10px;padding:4px 7px;border-radius:6px;cursor:pointer;line-height:1.4;border:1px solid transparent;display:flex;align-items:flex-start;gap:4px}
+.chip:hover{filter:brightness(.96)}
+.clabel{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-f{background:var(--hc);color:var(--hd);border-color:var(--hb)}
+.ch-b{background:var(--fp);color:var(--fd);border-color:var(--fb)}
+.ch-c{background:var(--pp);color:var(--p);border-color:var(--pb)}
+.ch-n{background:var(--s2);color:var(--t2);border-color:var(--bds)}
+.ch-wa{background:var(--wap);color:var(--wa);border-color:var(--wab)}
+.addbtn{font-size:11px;color:var(--t3);cursor:pointer;display:inline-flex;align-items:center;gap:3px;padding:2px 0;border:none;background:none;margin-top:auto;font-family:var(--font)}
+.addbtn:hover{color:var(--h)}
+
+/* ─── MODAL ─── */
+.overlay{position:fixed;inset:0;background:rgba(15,10,5,.45);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.overlay.on{display:flex}
+.modal{background:var(--s);border-radius:16px;width:100%;border:1px solid var(--bd);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.15);margin:auto}
+.modal.sm{max-width:580px}
+.modal.md{max-width:660px}
+.mhead{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--bd)}
+.mtitle{font-size:15px;font-weight:600}
+.mclose{background:none;border:none;color:var(--t3);font-size:20px;line-height:1;padding:2px}
+.mclose:hover{color:var(--t)}
+.mbody{padding:1.25rem;max-height:75vh;overflow-y:auto}
+.mfoot{padding:.875rem 1.25rem;border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+
+.field{margin-bottom:1rem}
+.flabel{font-size:11px;font-weight:600;color:var(--t2);margin-bottom:5px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.05em}
+.fopt{font-size:10px;font-weight:400;color:var(--t3);text-transform:none;letter-spacing:0}
+.fhint{font-size:11px;color:var(--t3);margin-top:4px;line-height:1.5}
+input[type=text],input[type=date],input[type=number],select,textarea{width:100%;padding:8px 11px;border:1px solid var(--bds);border-radius:var(--r);font-size:13px;color:var(--t);background:var(--s);font-family:var(--font);outline:none;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--h);box-shadow:0 0 0 3px rgba(201,122,10,.1)}
+textarea{resize:vertical;line-height:1.6}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* pickers */
+.pickrow{display:flex;flex-wrap:wrap;gap:6px}
+.pk{padding:6px 12px;border:1px solid var(--bd);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;background:var(--s1);color:var(--t2);transition:all .15s}
+.pk:hover{border-color:var(--hb)}
+.pk.on{background:var(--hc);color:var(--hd);border-color:var(--h)}
+.pk.on-wa{background:var(--wap);color:var(--wa);border-color:var(--wa)}
+.cpick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.copt{border:1.5px solid var(--bd);border-radius:var(--r);padding:9px 8px;cursor:pointer;text-align:center;transition:all .15s}
+.copt-ico{font-size:19px;margin-bottom:2px}
+.copt-name{font-size:12px;font-weight:600;display:block}
+.copt-sub{font-size:10px;color:var(--t3);display:block;margin-top:1px}
+.copt.on-f{border-color:var(--h);background:var(--hp)}
+.copt.on-b{border-color:var(--f);background:var(--fp)}
+.copt.on-c{border-color:var(--p);background:var(--pp)}
+.copt.on-n{border-color:var(--bds);background:var(--s2)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.metrics input{text-align:center}
+
+/* tags */
+.tagwrap{display:flex;flex-wrap:wrap;gap:5px;padding:7px 9px;border:1px solid var(--bds);border-radius:var(--r);min-height:38px;cursor:text}
+.tagwrap:focus-within{border-color:var(--h);box-shadow:0 0 0 3px rgba(201,122,10,.1)}
+.tagpill{display:inline-flex;align-items:center;gap:4px;background:var(--hc);color:var(--hd);border:1px solid var(--hb);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:500}
+.tagdel{cursor:pointer;font-size:13px;line-height:1;opacity:.5}
+.tagdel:hover{opacity:1}
+.taginput{border:none;outline:none;font-size:12px;background:none;color:var(--t);min-width:90px;flex:1;font-family:var(--font)}
+
+/* go/no-go */
+.checks{display:grid;gap:7px;padding:11px 12px;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r)}
+.checks .cap{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.checks label{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:500;cursor:pointer;color:var(--t2)}
+
+/* ─── IDEAS ─── */
+.ideas-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.875rem;flex-wrap:wrap;gap:8px}
+.ifilters{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;background:var(--s);border:1px solid var(--bd);border-radius:12px;margin-bottom:1rem;align-items:center}
+.iflabel{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.ifbtn{padding:4px 10px;border:1px solid var(--bd);border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;background:var(--s1);color:var(--t2);font-family:var(--font)}
+.ifbtn.on{background:var(--h);color:#fff;border-color:var(--h)}
+.igrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.icard{background:var(--s);border:1px solid var(--bd);border-radius:12px;padding:13px;display:flex;flex-direction:column;gap:7px}
+.icard:hover{border-color:var(--hb)}
+.icard-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.ibadges{display:flex;gap:4px;flex-wrap:wrap}
+.badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;border:1px solid}
+.badge-f{background:var(--hc);color:var(--hd);border-color:var(--hb)}
+.badge-b{background:var(--fp);color:var(--fd);border-color:var(--fb)}
+.badge-c{background:var(--pp);color:var(--p);border-color:var(--pb)}
+.badge-n{background:var(--s2);color:var(--t2);border-color:var(--bds)}
+.badge-tag{background:var(--s2);color:var(--t2);border-color:var(--bds)}
+.badge-sku{background:#FFF8E1;color:#5D4037;border-color:#D7CCC8}
+.ititle{font-size:13px;font-weight:600;line-height:1.35}
+.idesc{font-size:12px;color:var(--t2);line-height:1.55}
+.gwhy{font-size:10px;color:var(--fd);font-weight:500}
+.gwhy.fail{color:var(--danger)}
+.ifoot{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:2px}
+.minibtn{font-size:11px;padding:4px 9px;border:1px solid var(--bd);border-radius:6px;background:none;cursor:pointer;color:var(--t2);display:inline-flex;align-items:center;gap:3px;font-family:var(--font)}
+.minibtn:hover{background:var(--s2);color:var(--t)}
+.minibtn.d{color:var(--danger);border-color:#FECACA}
+.minibtn.d:hover{background:var(--dangerp)}
+.empty{text-align:center;padding:2.5rem;color:var(--t3);font-size:13px;grid-column:1/-1}
+.sechead{font-size:12px;font-weight:600;margin:1.1rem 0 .6rem;display:flex;gap:8px;align-items:baseline}
+.sechead small{color:var(--t3);font-weight:400;font-size:11px}
+
+/* ─── MONTHLY ─── */
+.caldow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-bottom:5px}
+.dow{font-size:10px;color:var(--t3);text-align:center;font-weight:600;text-transform:uppercase;padding:3px}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.ccell{background:var(--s);border:1px solid var(--bd);border-radius:9px;padding:7px;min-height:62px;cursor:pointer;transition:all .15s}
+.ccell:hover{border-color:var(--hb);background:var(--hp)}
+.ccell.today{border-color:var(--h);background:var(--hp)}
+.ccell.other{opacity:.3;pointer-events:none}
+.cdate{font-size:11px;font-weight:600;color:var(--t2);margin-bottom:4px}
+.cdots{display:flex;flex-wrap:wrap;gap:3px}
+.dot{width:7px;height:7px;border-radius:50%}
+.daypanel{background:var(--s);border:1px solid var(--bd);border-radius:12px;padding:1.1rem;margin-top:1rem;display:none}
+.daypanel.on{display:block}
+.dphead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dptitle{font-size:14px;font-weight:600}
+.dplist{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.dpitem{background:var(--s1);border:1px solid var(--bd);border-radius:9px;padding:10px 12px}
+.dpitem-meta{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap}
+.dpitem-content{font-size:12px;color:var(--t2);line-height:1.55}
+.card{background:var(--s);border:1px solid var(--bd);border-radius:12px;padding:1.1rem;margin-top:1rem}
+.card h3{font-size:13px;font-weight:600;margin-bottom:.75rem}
+.kpi-table{width:100%;border-collapse:collapse;font-size:12px}
+.kpi-table th,.kpi-table td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--bd)}
+.kpi-table th:first-child,.kpi-table td:first-child{text-align:left}
+.kpi-table th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3)}
+.kpi-table tr.tot td{font-weight:700;border-bottom:none}
+.likes-note{font-size:11px;color:var(--t3);margin-top:7px;font-style:italic}
+.top-post{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:12px;align-items:baseline}
+.top-post:last-child{border-bottom:none}
+.grid2m{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+
+/* ─── SYNC ─── */
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.help{font-size:12px;color:var(--t2);line-height:1.65;margin-top:6px}
+.statusmsg{font-size:12px;margin-top:10px;padding:8px 12px;border-radius:8px;display:none}
+.statusmsg.ok{display:block;background:var(--fp);color:var(--fd)}
+.statusmsg.err{display:block;background:var(--dangerp);color:var(--danger)}
+.listrow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border:1px solid var(--bd);border-radius:8px;margin-bottom:6px;font-size:12px;background:var(--s1)}
+.addline{display:flex;gap:7px;margin-bottom:10px}
+.wgrid>*,.stats>*,.calgrid>*,.igrid>*,.grid2>*,.grid2m>*{min-width:0}
+.dpitem-content,.ititle,.idesc,#confirmMsg{overflow-wrap:anywhere}
+.vhook{background:var(--t);color:#fff;border-radius:10px;padding:12px 14px;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
+.vlabel{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin:14px 0 5px}
+.vtext{font-size:13px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--t)}
+.vmeta{display:flex;gap:5px;flex-wrap:wrap}
+
+/* ─── IMPORT ─── */
+.importbox{width:100%;min-height:150px;font-family:var(--mono);font-size:11px}
+.preview{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:11px 13px;font-size:12px;line-height:1.7;margin-top:10px;display:none}
+.preview.on{display:block}
+.preview b{color:var(--hd)}
+.preview .warn{color:var(--danger)}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--t);color:#fff;padding:9px 18px;border-radius:9px;font-size:13px;font-weight:500;opacity:0;transition:all .25s;z-index:999;max-width:90vw;text-align:center;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:760px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .igrid,.grid2,.grid2m{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .cpick{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="bico">🍯</div>
+    <div><div class="bname">Makrand Honey</div><div class="bsub">Content Command Centre · V2</div></div>
+  </div>
+  <nav class="nav">
+    <button class="ntab on" id="nt-week" onclick="switchTab('week')">📅 Weekly</button>
+    <button class="ntab" id="nt-ideas" onclick="switchTab('ideas')">💡 Ideas</button>
+    <button class="ntab" id="nt-month" onclick="switchTab('month')">📊 Monthly</button>
+    <button class="ntab" id="nt-sync" onclick="switchTab('sync')">⚙️ Settings</button>
+  </nav>
+</div>
+
+<!-- PHASE GATE -->
+<div class="gate">
+  <span class="glabel">Phase gate</span>
+  <span class="gnums">Repeat rate <input type="number" id="repeatRate" step="0.1" min="0" max="100" onchange="setRepeatRate(this.value)"> %</span>
+  <div class="gbar"><div class="gfill" id="gfill"></div><div class="gmark"></div></div>
+  <span class="gmsg" id="gmsg"></span>
+</div>
+
+<!-- ══ WEEKLY ══ -->
+<div id="tab-week">
+  <div class="stats" id="wstats"></div>
+  <div class="balance">
+    <div class="bal-h">Pillar balance — this week <small>Instagram only · target 40 / 25 / 20 / 10 / 5</small></div>
+    <div id="balrows"></div>
+  </div>
+  <div class="tbar">
+    <div class="tbar-l">
+      <button class="btn ico" onclick="shiftWeek(-1)">←</button>
+      <span class="period" id="wlabel">–</span>
+      <button class="btn ico" onclick="shiftWeek(1)">→</button>
+      <button class="btn" onclick="goToday()">Today</button>
+    </div>
+    <div class="tbar-r">
+      <button class="btn btn-h" onclick="copyWeekPrompt()">📋 Copy week prompt</button>
+      <button class="btn btn-g" onclick="openImport()">📥 Import from AI</button>
+      <button class="btn btn-p" onclick="openPost(null,null)">+ Add post</button>
+    </div>
+  </div>
+  <div class="wgrid" id="wgrid"></div>
+</div>
+
+<!-- ══ IDEAS ══ -->
+<div id="tab-ideas" style="display:none">
+  <div class="stats" id="istats"></div>
+  <div class="ideas-top">
+    <span style="font-size:14px;font-weight:600">Ideas bank</span>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="btn btn-h" onclick="copyIdeasPrompt()">📋 Copy ideas prompt</button>
+      <button class="btn btn-g" onclick="openImport()">📥 Import from AI</button>
+      <button class="btn btn-p" onclick="openIdeaModal(null)">+ Add idea</button>
+    </div>
+  </div>
+  <div class="ifilters">
+    <span class="iflabel">Pillar:</span>
+    <button class="ifbtn on" onclick="setFilter('all',this)">All</button>
+    <button class="ifbtn" onclick="setFilter('usage',this)">Usage</button>
+    <button class="ifbtn" onclick="setFilter('trust',this)">Trust</button>
+    <button class="ifbtn" onclick="setFilter('product',this)">Product</button>
+    <button class="ifbtn" onclick="setFilter('founder',this)">Founder</button>
+    <button class="ifbtn" onclick="setFilter('farm',this)">Farm</button>
+    <span class="iflabel" style="margin-left:6px">SKU:</span>
+    <span id="skuFilterBtns" style="display:contents"></span>
+  </div>
+  <div class="sechead">Active bank <small id="activeCount"></small></div>
+  <div class="igrid" id="igrid"></div>
+  <div class="sechead">Parked <small>failed the go/no-go filter — rework before scheduling</small></div>
+  <div class="igrid" id="pgrid"></div>
+</div>
+
+<!-- ══ MONTHLY ══ -->
+<div id="tab-month" style="display:none">
+  <div class="stats" id="mstats"></div>
+  <div class="tbar">
+    <div class="tbar-l">
+      <button class="btn ico" onclick="shiftMonth(-1)">←</button>
+      <span class="period" id="mlabel">–</span>
+      <button class="btn ico" onclick="shiftMonth(1)">→</button>
+    </div>
+  </div>
+  <div class="caldow"><div class="dow">Mon</div><div class="dow">Tue</div><div class="dow">Wed</div><div class="dow">Thu</div><div class="dow">Fri</div><div class="dow">Sat</div><div class="dow">Sun</div></div>
+  <div class="calgrid" id="mgrid"></div>
+  <div class="daypanel" id="daypanel">
+    <div class="dphead">
+      <span class="dptitle" id="dptitle">Day</span>
+      <button class="btn ico" onclick="closeDayPanel()">✕</button>
+    </div>
+    <div class="dplist" id="dplist"></div>
+    <button class="btn btn-p" onclick="openPost(currentDay,null)">+ Add post</button>
+  </div>
+
+  <div class="balance" style="margin-top:1rem">
+    <div class="bal-h">Pillar mix shipped this month <small>Live Instagram posts only · vs 40/25/20/10/5</small></div>
+    <div id="mbalrows"></div>
+  </div>
+  <div class="grid2m">
+    <div class="card" style="margin-top:0">
+      <h3>KPIs by pillar — Live posts</h3>
+      <table class="kpi-table" id="kpiTable"></table>
+      <div class="likes-note">Likes are deliberately not tracked. Saves → shares → clicks → orders.</div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <h3>Top posts by saves</h3>
+      <div id="topPosts"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SYNC ══ -->
+<div id="tab-sync" style="display:none">
+  <div class="grid2" style="margin-bottom:14px">
+    <div class="card" style="margin-top:0">
+      <h3>Team members</h3>
+      <div class="addline">
+        <input type="text" id="teamName" placeholder="Name, e.g. Ikshit" onkeydown="if(event.key==='Enter')addTeamMember()">
+        <button class="btn btn-p" onclick="addTeamMember()">Add</button>
+      </div>
+      <div id="teamList"></div>
+      <div class="help">Members appear in the post editor's <b>Owner</b> dropdown so every post has a name on it. Removing someone keeps their name on existing posts.</div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <h3>SKUs</h3>
+      <div class="addline">
+        <input type="text" id="skuLabel" placeholder="e.g. 🌼 Jamun (MP)" onkeydown="if(event.key==='Enter')addSku()">
+        <button class="btn btn-p" onclick="addSku()">Add</button>
+      </div>
+      <div id="skuList"></div>
+      <div class="help">New SKUs appear instantly in the post editor, idea editor, filters, and copy-prompt schemas. <b>Also add the SKU's origin and proof points to the Content Engine Kit</b> in each team member's AI workspace — otherwise the AI won't know what to say about it.</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card" style="margin-top:0">
+      <h3>Google Sheets sync</h3>
+      <div class="field" style="margin-bottom:.6rem">
+        <label class="flabel">Apps Script Web App URL</label>
+        <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/…/exec">
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="btn" onclick="saveUrl()">Save URL</button>
+        <button class="btn btn-p" onclick="pushSheet()">⬆ Push to Sheet</button>
+        <button class="btn btn-h" onclick="pullSheet()">⬇ Pull from Sheet</button>
+      </div>
+      <div class="statusmsg" id="syncMsg"></div>
+      <div class="help">The Sheet is the team's source of truth. Start of session: <b>Pull</b>. End of session: <b>Push</b>. Push replaces the Sheet with this browser's data — pull first if others have been working.</div>
+    </div>
+    <div class="card" style="margin-top:0">
+      <h3>How the AI workflow runs</h3>
+      <div class="help">
+        1. Each team member has their own AI workspace (Claude, ChatGPT, or Gemini) set up with the <b>Makrand Content Engine Kit</b> + brand PDFs.<br><br>
+        2. In the dashboard, click <b>Copy week prompt</b> / <b>Copy ideas prompt</b> / <b>Copy script prompt</b> and paste it into your AI chat.<br><br>
+        3. Iterate there until the content is right. Ask for the final <b>JSON block</b>.<br><br>
+        4. Back here, click <b>Import from AI</b>, paste, preview, confirm. Import only ever <b>adds</b> — it never deletes or overwrites existing work.<br><br>
+        5. Friday ritual: open each Live post, fill saves / shares / clicks / orders, then Push.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ══ POST MODAL ══ -->
+<div class="overlay" id="post-ov" onclick="if(event.target===this)closePost()">
+<div class="modal sm">
+  <div class="mhead">
+    <span class="mtitle" id="post-title">Add post</span>
+    <button class="mclose" onclick="closePost()">✕</button>
+  </div>
+  <div class="mbody">
+    <div class="field">
+      <label class="flabel">Platform</label>
+      <div class="pickrow">
+        <span class="pk on" id="pf-instagram" onclick="pickPlatform('instagram')">📸 Instagram</span>
+        <span class="pk" id="pf-whatsapp" onclick="pickPlatform('whatsapp')">💬 WhatsApp</span>
+      </div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label class="flabel">Date</label>
+        <input type="date" id="f-date">
+      </div>
+      <div class="field">
+        <label class="flabel">Status</label>
+        <div class="pickrow" id="statusrow">
+          <span class="pk" onclick="pickStatus('draft')" id="st-draft">📝 Draft</span>
+          <span class="pk" onclick="pickStatus('scheduled')" id="st-scheduled">📅 Scheduled</span>
+          <span class="pk" onclick="pickStatus('live')" id="st-live">✅ Live</span>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">Owner <span class="fopt">(who's making this)</span></label>
+      <select id="f-owner"></select>
+    </div>
+    <div class="field">
+      <label class="flabel">Pillar <span class="fopt">(strategy tag — drives the balance strip)</span></label>
+      <div class="pickrow" id="pillarrow">
+        <span class="pk" onclick="pickPillar('usage')" id="pl-usage">Usage / Ritual</span>
+        <span class="pk" onclick="pickPillar('trust')" id="pl-trust">Trust</span>
+        <span class="pk" onclick="pickPillar('product')" id="pl-product">Product</span>
+        <span class="pk" onclick="pickPillar('founder')" id="pl-founder">Founder</span>
+        <span class="pk" onclick="pickPillar('farm')" id="pl-farm">Farm</span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">Character</label>
+      <div class="cpick">
+        <div class="copt" id="cp-f" onclick="pickChar('f')"><div class="copt-ico">👤</div><span class="copt-name">Founder</span><span class="copt-sub">City · ritual</span></div>
+        <div class="copt" id="cp-b" onclick="pickChar('b')"><div class="copt-ico">🐝</div><span class="copt-name">Beepreneur</span><span class="copt-sub">Farm · hive</span></div>
+        <div class="copt" id="cp-c" onclick="pickChar('c')"><div class="copt-ico">✦</div><span class="copt-name">Collab</span><span class="copt-sub">Split-screen</span></div>
+        <div class="copt" id="cp-n" onclick="pickChar('n')"><div class="copt-ico">🍯</div><span class="copt-name">Brand</span><span class="copt-sub">No face · graphics</span></div>
+      </div>
+    </div>
+    <div class="field" id="fld-type">
+      <label class="flabel">Content type</label>
+      <div class="pickrow" id="typerow"></div>
+    </div>
+    <div class="field" id="fld-audience" style="display:none">
+      <label class="flabel">Audience</label>
+      <div class="pickrow">
+        <span class="pk" onclick="pickAudience('all')" id="au-all">All customers</span>
+        <span class="pk" onclick="pickAudience('repeat')" id="au-repeat">Repeat customers</span>
+        <span class="pk" onclick="pickAudience('leads')" id="au-leads">Leads</span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">SKU <span class="fopt">(optional)</span></label>
+      <div class="pickrow" id="skurow"></div>
+    </div>
+    <div class="field">
+      <label class="flabel" id="lbl-hook">Hook / script idea</label>
+      <textarea id="f-hook" rows="2" placeholder="Opening hook or core idea…"></textarea>
+    </div>
+    <div class="field">
+      <label class="flabel" id="lbl-caption">Caption <span class="fopt">(optional)</span></label>
+      <textarea id="f-caption" rows="3" placeholder="Caption text…"></textarea>
+    </div>
+    <div class="field" id="fld-tags">
+      <label class="flabel">Hashtags</label>
+      <div class="tagwrap" id="tagwrap" onclick="var t=document.getElementById('taginput');if(t)t.focus()"></div>
+      <div class="fhint">Enter or comma to add · #MakrandHoney #RawRegionalReal #TheUntouchedHoney</div>
+    </div>
+    <div class="field">
+      <label class="flabel">Team / filming notes <span class="fopt">(optional)</span></label>
+      <input type="text" id="f-notes" placeholder="e.g. Golden hour, GoPro, show hive boxes…">
+    </div>
+    <div class="field" id="fld-metrics" style="display:none">
+      <label class="flabel">Metrics — fill after posting</label>
+      <div class="metrics">
+        <input type="number" id="m-saves" placeholder="Saves" min="0">
+        <input type="number" id="m-shares" placeholder="Shares" min="0">
+        <input type="number" id="m-clicks" placeholder="Clicks" min="0">
+        <input type="number" id="m-orders" placeholder="Orders" min="0">
+      </div>
+    </div>
+  </div>
+  <div class="mfoot">
+    <button class="btn btn-d" id="del-post-btn" style="display:none;margin-right:auto" onclick="deletePost()">🗑 Delete</button>
+    <button class="btn" onclick="closePost()">Cancel</button>
+    <button class="btn btn-h" onclick="copyScriptPrompt()">📋 Copy script prompt</button>
+    <button class="btn btn-p" onclick="savePost()">✓ Save post</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ IDEA MODAL ══ -->
+<div class="overlay" id="idea-ov" onclick="if(event.target===this)closeIdeaModal()">
+<div class="modal sm">
+  <div class="mhead">
+    <span class="mtitle" id="idea-mtitle">Add idea</span>
+    <button class="mclose" onclick="closeIdeaModal()">✕</button>
+  </div>
+  <div class="mbody">
+    <div class="field"><label class="flabel">Title</label><input type="text" id="i-title" placeholder="Short punchy title"></div>
+    <div class="field"><label class="flabel">Description</label><textarea id="i-desc" rows="2" placeholder="One sentence: what's the idea?"></textarea></div>
+    <div class="field">
+      <label class="flabel">Pillar</label>
+      <div class="pickrow">
+        <span class="pk" onclick="pickIPillar('usage')" id="ipl-usage">Usage</span>
+        <span class="pk" onclick="pickIPillar('trust')" id="ipl-trust">Trust</span>
+        <span class="pk" onclick="pickIPillar('product')" id="ipl-product">Product</span>
+        <span class="pk" onclick="pickIPillar('founder')" id="ipl-founder">Founder</span>
+        <span class="pk" onclick="pickIPillar('farm')" id="ipl-farm">Farm</span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">Character</label>
+      <div class="cpick">
+        <div class="copt" id="icp-f" onclick="pickIChar('f')"><div class="copt-ico">👤</div><span class="copt-name">Founder</span></div>
+        <div class="copt" id="icp-b" onclick="pickIChar('b')"><div class="copt-ico">🐝</div><span class="copt-name">Beepreneur</span></div>
+        <div class="copt" id="icp-c" onclick="pickIChar('c')"><div class="copt-ico">✦</div><span class="copt-name">Collab</span></div>
+        <div class="copt" id="icp-n" onclick="pickIChar('n')"><div class="copt-ico">🍯</div><span class="copt-name">Brand</span></div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="flabel">SKU <span class="fopt">(optional)</span></label>
+      <div class="pickrow" id="iskurow"></div>
+    </div>
+    <div class="field">
+      <div class="checks">
+        <span class="cap">Go / No-Go filter — tick what this idea does</span>
+        <label><input type="checkbox" id="g-trust"> Builds trust</label>
+        <label><input type="checkbox" id="g-usage"> Increases usage</label>
+        <label><input type="checkbox" id="g-conv"> Improves conversion</label>
+      </div>
+      <div class="fhint">If nothing is ticked, the idea is parked — saved, but blocked from scheduling until reworked.</div>
+    </div>
+  </div>
+  <div class="mfoot">
+    <button class="btn btn-d" id="del-idea-btn" style="display:none;margin-right:auto" onclick="deleteIdea()">🗑 Delete</button>
+    <button class="btn" onclick="closeIdeaModal()">Cancel</button>
+    <button class="btn btn-p" onclick="saveIdea()">✓ Save idea</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ IMPORT MODAL ══ -->
+<div class="overlay" id="import-ov" onclick="if(event.target===this)closeImport()">
+<div class="modal md">
+  <div class="mhead">
+    <span class="mtitle">Import from AI</span>
+    <button class="mclose" onclick="closeImport()">✕</button>
+  </div>
+  <div class="mbody">
+    <div class="fhint" style="margin-bottom:8px">Paste the JSON block your AI produced (posts or ideas). Extra text around it is fine — the parser will find the JSON. Import only <b>adds</b>; it never deletes or changes existing posts.</div>
+    <textarea class="importbox" id="importbox" placeholder='Paste here… e.g. [{"date":"2026-07-09","platform":"instagram","pillar":"usage",…}]' oninput="previewImport()"></textarea>
+    <div class="preview" id="importPreview"></div>
+  </div>
+  <div class="mfoot">
+    <button class="btn" onclick="closeImport()">Cancel</button>
+    <button class="btn btn-p" id="importBtn" onclick="confirmImport()" disabled>Import 0 items</button>
+  </div>
+</div>
+</div>
+
+<!-- ══ VIEW MODAL ══ -->
+<div class="overlay" id="view-ov" onclick="if(event.target===this)closeView()">
+<div class="modal sm">
+  <div class="mhead">
+    <span class="mtitle" id="viewTitle">View</span>
+    <button class="mclose" onclick="closeView()">✕</button>
+  </div>
+  <div class="mbody" id="viewBody"></div>
+  <div class="mfoot" id="viewFoot"></div>
+</div>
+</div>
+
+<!-- ══ CONFIRM MODAL (native confirm() is blocked in embedded iframes) ══ -->
+<div class="overlay" id="confirm-ov" onclick="if(event.target===this)confirmNo()">
+<div class="modal sm" style="max-width:400px">
+  <div class="mbody"><div id="confirmMsg" style="font-size:13px;line-height:1.65"></div></div>
+  <div class="mfoot">
+    <button class="btn" onclick="confirmNo()">Cancel</button>
+    <button class="btn btn-d" id="confirmYesBtn" onclick="confirmYes()">Confirm</button>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════ CONSTANTS ═══════════ */
+var MOS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DNS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var PILLARS=['usage','trust','product','founder','farm'];
+var PLABEL={usage:'Usage',trust:'Trust',product:'Product',founder:'Founder',farm:'Farm'};
+var TARGET={usage:40,trust:25,product:20,founder:10,farm:5};
+var DAY_THEME={1:'founder',2:'product',3:'farm',4:'usage',5:'trust',6:'',0:'farm'};
+var CLABEL={f:'👤 Founder',b:'🐝 Beepreneur',c:'✦ Collab',n:'🍯 Brand'};
+var CBADGE={f:'badge-f',b:'badge-b',c:'badge-c',n:'badge-n'};
+var CCH={f:'ch-f',b:'ch-b',c:'ch-c',n:'ch-n'};
+var CHARS=['f','b','c','n'];
+var DEFAULT_SKUS={litchi:'🌸 Litchi (Dehradun)',mustard:'🌻 Mustard (Sambhal, UP)',jungle:'🌿 Jungle (Himachal)',ajwain:'🌾 Ajwain (Rajasthan)'};
+function SKUKEYS(){return Object.keys(state.settings.skus);}
+function skuLabel(k){return state.settings.skus[k]||k;}
+var IG_TYPES=['reels','vlog','carousel','story','mythbust','education','splitscreen','testimonial'];
+var WA_TYPES=['status','broadcast'];
+function postSchema(){return '{"date":"YYYY-MM-DD","platform":"instagram","pillar":"usage|trust|product|founder|farm","character":"f|b|c|n (n = Brand, no on-camera character — graphics/voiceover)","type":"reels|vlog|carousel|story|mythbust|education|splitscreen|testimonial","sku":"'+SKUKEYS().join('|')+' or empty string","hook":"under 12 words, visceral, Hindi+English mix","caption":"max 5 lines, one CTA, Hindi+English","tags":["#MakrandHoney","..."],"notes":"one filming direction"}';}
+var WA_SCHEMA='{"date":"YYYY-MM-DD","platform":"whatsapp","type":"status|broadcast","audience":"all|repeat|leads","pillar":"usage|trust|product|founder|farm","hook":"headline / first line","caption":"full message body, warm, Hinglish, one CTA","notes":"optional"}';
+function ideaSchema(){return '{"title":"punchy specific title","desc":"one sentence with the visual/angle/proof","pillar":"usage|trust|product|founder|farm","character":"f|b|c|n","sku":"'+SKUKEYS().join('|')+' or empty string","gates":{"trust":true,"usage":false,"conversion":false}}';}
+
+/* ═══════════ STATE ═══════════ */
+var KEY='mk_v2';
+var state=loadState();
+var weekOff=0,monthOff=0,editPostKey=null,editIdeaId=null,currentDay=null,ideaFilter='all';
+var pPlatform='instagram',pPillar='usage',pChar='f',pType='reels',pStatus='draft',pSku='',pAudience='all';
+var iPillar='usage',iChar='b',iSku='';
+var htags=[],importItems=null,importKind=null;
+
+function today(){return new Date();}
+function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function normDate(v){
+  if(v==null)return '';
+  if(typeof v==='number'&&isFinite(v)&&v>20000&&v<80000){ /* sheet serial number */
+    var sd=new Date(Math.round((v-25569)*86400000));
+    return sd.getUTCFullYear()+'-'+String(sd.getUTCMonth()+1).padStart(2,'0')+'-'+String(sd.getUTCDate()).padStart(2,'0');
+  }
+  var s=String(v).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s;           /* already clean — never re-parse (avoids TZ shifts) */
+  var d=new Date(s);                                      /* ISO timestamps etc → local calendar day */
+  if(!isNaN(d.getTime()))return fmt(d);
+  var m=s.match(/(\d{4}-\d{2}-\d{2})/);
+  return m?m[1]:s;
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function esc(s){var d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function mondayOf(d){var x=new Date(d);var sh=(x.getDay()+6)%7;x.setDate(x.getDate()-sh);x.setHours(0,0,0,0);return x;}
+
+function normSt(st){
+  st.settings=st.settings||{};
+  if(typeof st.settings.repeatRate==='undefined')st.settings.repeatRate=0;
+  if(typeof st.settings.scriptUrl!=='string')st.settings.scriptUrl='';
+  if(!Array.isArray(st.settings.team))st.settings.team=[];
+  if(!st.settings.skus||typeof st.settings.skus!=='object'||Array.isArray(st.settings.skus)||!Object.keys(st.settings.skus).length)st.settings.skus=Object.assign({},DEFAULT_SKUS);
+  if(st.posts&&typeof st.posts==='object'){
+    Object.keys(st.posts).forEach(function(k){if(st.posts[k])st.posts[k].date=normDate(st.posts[k].date);});
+  }
+  return st;
+}
+function loadState(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(raw){var s=JSON.parse(raw);
+      if(s&&typeof s==='object')return normSt({posts:s.posts||{},ideas:Array.isArray(s.ideas)?s.ideas:[],settings:s.settings||{}});
+    }
+  }catch(e){console.error('load failed',e);}
+  return normSt(migrateV1()||{posts:{},ideas:[],settings:{}});
+}
+function saveState(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){console.error('save failed',e);toast('Could not save — storage full?',true);}}
+
+/* ── V1 migration (mkh3_posts / mkh3_ideas) ── */
+function migrateV1(){
+  var oldP=null,oldI=null;
+  try{oldP=JSON.parse(localStorage.getItem('mkh3_posts')||'null');}catch(e){}
+  try{oldI=JSON.parse(localStorage.getItem('mkh3_ideas')||'null');}catch(e){}
+  if(!oldP&&!oldI)return null;
+  var st={posts:{},ideas:[],settings:{repeatRate:0,scriptUrl:''}};
+  var pillarGuess=function(ct){if(ct==='mythbust'||ct==='testimonial')return 'trust';if(ct==='education'||ct==='carousel')return 'product';return 'usage';};
+  var skuKey=function(s){if(!s)return '';var f=s.toLowerCase();if(f.indexOf('litchi')>=0)return 'litchi';if(f.indexOf('mustard')>=0)return 'mustard';if(f.indexOf('jungle')>=0)return 'jungle';if(f.indexOf('ajwain')>=0)return 'ajwain';return '';};
+  var stMap={draft:'draft',sched:'scheduled',pub:'live'};
+  if(oldP&&typeof oldP==='object'){
+    Object.keys(oldP).forEach(function(k){
+      var v=oldP[k];if(!v||!v.date)return;
+      st.posts[uid()]={date:v.date,platform:'instagram',pillar:pillarGuess(v.ct),character:v.ch||'f',type:v.ct||'reels',sku:skuKey(v.sku),hook:v.content||'',caption:v.caption||'',tags:Array.isArray(v.tags)?v.tags:[],notes:v.notes||'',audience:'',status:stMap[v.status]||'draft',metrics:{saves:0,shares:0,clicks:0,orders:0}};
+    });
+  }
+  var gateGuess=function(tag){var t=(tag||'').toLowerCase();var g={trust:false,usage:false,conversion:false};
+    if(t.indexOf('trust')>=0||t.indexOf('myth')>=0||t.indexOf('farm')>=0)g.trust=true;
+    else if(t.indexOf('wellness')>=0||t.indexOf('ritual')>=0||t.indexOf('education')>=0)g.usage=true;
+    else if(t.indexOf('scarcity')>=0||t.indexOf('product')>=0)g.conversion=true;
+    else g.trust=true;return g;};
+  if(Array.isArray(oldI)){
+    oldI.forEach(function(v){
+      if(!v||!v.title)return;
+      st.ideas.push({id:uid(),title:v.title,desc:v.desc||'',pillar:pillarGuess(''),character:v.ch||'b',sku:(function(s){if(!s)return '';var f=s.toLowerCase();if(f.indexOf('litchi')>=0)return 'litchi';if(f.indexOf('mustard')>=0)return 'mustard';if(f.indexOf('jungle')>=0)return 'jungle';if(f.indexOf('ajwain')>=0)return 'ajwain';return '';})(v.sku),gates:gateGuess(v.tag),parked:false,created:fmt(today())});
+    });
+  }
+  try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
+  setTimeout(function(){toast('Migrated V1 data — review pillars on old posts, they were auto-guessed');},600);
+  return st;
+}
+
+/* ═══════════ TABS ═══════════ */
+function switchTab(name){
+  ['week','ideas','month','sync'].forEach(function(t){
+    document.getElementById('tab-'+t).style.display=t===name?'block':'none';
+    document.getElementById('nt-'+t).classList.toggle('on',t===name);
+  });
+  if(name==='week')renderWeek();
+  if(name==='ideas')renderIdeas();
+  if(name==='month')renderMonth();
+  if(name==='sync'){document.getElementById('scriptUrl').value=state.settings.scriptUrl||'';renderTeam();renderSkuList();}
+}
+
+/* ═══════════ PHASE GATE ═══════════ */
+function renderGate(){
+  var rr=Number(state.settings.repeatRate)||0;
+  document.getElementById('repeatRate').value=rr;
+  document.getElementById('gfill').style.width=Math.min(100,rr/30*100)+'%';
+  var m=document.getElementById('gmsg');
+  if(rr>=25)m.innerHTML='<span class="win">✓ Gate crossed — Phase 2 unlocked</span>';
+  else m.textContent='25% unlocks Phase 2 · '+(25-rr).toFixed(1)+'% to go';
+}
+function setRepeatRate(v){state.settings.repeatRate=Number(v)||0;saveState();renderGate();}
+
+/* ═══════════ WEEKLY ═══════════ */
+function weekStart(){var m=mondayOf(today());m.setDate(m.getDate()+weekOff*7);return m;}
+function goToday(){weekOff=0;renderWeek();}
+function shiftWeek(d){weekOff+=d;renderWeek();}
+function postsOn(dateStr){var out=[];Object.keys(state.posts).forEach(function(k){if(state.posts[k].date===dateStr)out.push([k,state.posts[k]]);});return out;}
+
+function renderWeek(){
+  var ws=weekStart();
+  var we=new Date(ws);we.setDate(we.getDate()+6);
+  document.getElementById('wlabel').textContent=MOS[ws.getMonth()].slice(0,3)+' '+ws.getDate()+' – '+MOS[we.getMonth()].slice(0,3)+' '+we.getDate()+', '+we.getFullYear();
+  var grid=document.getElementById('wgrid');grid.innerHTML='';
+  var tstr=fmt(today());
+  var weekDates=[];var igPosts=[];var waCount=0,total=0,liveCount=0;
+  for(var i=0;i<7;i++){
+    var d=new Date(ws);d.setDate(ws.getDate()+i);
+    var key=fmt(d);weekDates.push(key);
+    var dp=postsOn(key);
+    total+=dp.length;
+    dp.forEach(function(kv){if(kv[1].platform==='whatsapp')waCount++;else igPosts.push(kv[1]);if(kv[1].status==='live')liveCount++;});
+    var col=document.createElement('div');
+    col.className='dcol'+(key===tstr?' today':'');
+    var theme=DAY_THEME[d.getDay()];
+    col.innerHTML='<div class="dhead"><div class="dname">'+DNS[d.getDay()]+'</div><div class="dnum">'+d.getDate()+'</div>'+(theme?'<div class="dtheme">'+PLABEL[theme]+' day</div>':'<div class="dtheme">Open</div>')+'</div><div class="chips"></div>';
+    var chips=col.querySelector('.chips');
+    dp.forEach(function(kv){
+      var k=kv[0],v=kv[1];
+      var chip=document.createElement('div');
+      chip.className='chip '+(v.platform==='whatsapp'?'ch-wa':(CCH[v.character]||'ch-f'));
+      var icon=v.platform==='whatsapp'?'💬 ':'';
+      chip.innerHTML='<span class="clabel">'+icon+esc(v.hook||v.type||'post')+'</span>';
+      chip.title=(PLABEL[v.pillar]||'')+' · '+(v.status||'')+(v.owner?' · '+v.owner:'');
+      (function(kk){chip.onclick=function(){viewPost(kk);};})(k);
+      chips.appendChild(chip);
+    });
+    var ab=document.createElement('button');
+    ab.className='addbtn';ab.textContent='+ add';
+    (function(kk){ab.onclick=function(){openPost(kk,null);};})(key);
+    col.appendChild(ab);
+    grid.appendChild(col);
+  }
+  /* balance strip — instagram only */
+  renderBalanceRows('balrows',igPosts);
+  /* stats */
+  var actIdeas=state.ideas.filter(function(x){return !x.parked;}).length;
+  document.getElementById('wstats').innerHTML=
+    stat('This week',total,'posts planned')+
+    stat('Instagram',igPosts.length,'posts')+
+    stat('WhatsApp',waCount,'status / broadcast')+
+    stat('Ideas ready',actIdeas,'in the bank');
+}
+function stat(l,v,s){return '<div class="stat"><div class="slabel">'+l+'</div><div class="sval">'+v+'</div><div class="ssub">'+s+'</div></div>';}
+
+function renderBalanceRows(elId,posts){
+  var el=document.getElementById(elId);
+  var total=posts.length;var html='';
+  PILLARS.forEach(function(pl){
+    var n=posts.filter(function(p){return p.pillar===pl;}).length;
+    var pct=total?Math.round(n/total*100):0;
+    var off=total>0&&Math.abs(pct-TARGET[pl])>15;
+    html+='<div class="b-row"><div>'+PLABEL[pl]+'</div>'
+      +'<div class="b-track"><div class="b-fill'+(off?' off':'')+'" style="width:'+pct+'%"></div><div class="b-target" style="left:'+TARGET[pl]+'%"></div></div>'
+      +'<div class="b-num'+(off?' off':'')+'">'+n+' · '+pct+'% / '+TARGET[pl]+'%</div></div>';
+  });
+  if(!total)html+='<div style="font-size:11px;color:var(--t3)">Nothing here yet.</div>';
+  el.innerHTML=html;
+}
+
+/* ═══════════ POST MODAL ═══════════ */
+function openPost(dateStr,postKey){
+  editPostKey=postKey||null;
+  var p=postKey?state.posts[postKey]:null;
+  htags=p&&Array.isArray(p.tags)?p.tags.slice():[];
+  pickPlatform(p?(p.platform||'instagram'):'instagram');
+  document.getElementById('f-date').value=p?p.date:(dateStr||fmt(today()));
+  pickStatus(p?(p.status||'draft'):'draft');
+  var defPillar='usage';
+  if(!p&&dateStr){var dth=DAY_THEME[new Date(dateStr+'T00:00:00').getDay()];if(dth)defPillar=dth;}
+  pickPillar(p?(p.pillar||'usage'):defPillar);
+  pickChar(p?(p.character||'f'):'f');
+  pickType(p?(p.type||(pPlatform==='whatsapp'?'status':'reels')):(pPlatform==='whatsapp'?'status':'reels'));
+  buildSkuRow();
+  pickSku(p?(p.sku||''):'',true);
+  buildOwnerSelect(p?(p.owner||''):'');
+  pickAudience(p?(p.audience||'all'):'all');
+  document.getElementById('f-hook').value=p?(p.hook||''):'';
+  document.getElementById('f-caption').value=p?(p.caption||''):'';
+  document.getElementById('f-notes').value=p?(p.notes||''):'';
+  document.getElementById('m-saves').value=p&&p.metrics?(p.metrics.saves||''):'';
+  document.getElementById('m-shares').value=p&&p.metrics?(p.metrics.shares||''):'';
+  document.getElementById('m-clicks').value=p&&p.metrics?(p.metrics.clicks||''):'';
+  document.getElementById('m-orders').value=p&&p.metrics?(p.metrics.orders||''):'';
+  renderTags();
+  document.getElementById('post-title').textContent=postKey?'Edit post':'Add post';
+  document.getElementById('del-post-btn').style.display=postKey?'inline-flex':'none';
+  document.getElementById('post-ov').classList.add('on');
+}
+function closePost(){document.getElementById('post-ov').classList.remove('on');}
+
+function pickPlatform(pl){
+  pPlatform=pl;
+  document.getElementById('pf-instagram').className='pk'+(pl==='instagram'?' on':'');
+  document.getElementById('pf-whatsapp').className='pk'+(pl==='whatsapp'?' on-wa':'');
+  var isWA=pl==='whatsapp';
+  document.getElementById('fld-tags').style.display=isWA?'none':'block';
+  document.getElementById('fld-audience').style.display=isWA?'block':'none';
+  document.getElementById('lbl-hook').textContent=isWA?'Headline / first line':'Hook / script idea';
+  document.getElementById('lbl-caption').innerHTML=isWA?'Message body':'Caption <span class="fopt">(optional)</span>';
+  buildTypeRow();
+  var valid=(isWA?WA_TYPES:IG_TYPES);
+  if(valid.indexOf(pType)<0)pickType(valid[0]);
+}
+function buildTypeRow(){
+  var row=document.getElementById('typerow');
+  var types=pPlatform==='whatsapp'?WA_TYPES:IG_TYPES;
+  var icons={reels:'🎬',vlog:'📹',carousel:'🖼',story:'⭕',mythbust:'💡',education:'🎓',splitscreen:'⚡',testimonial:'💬',status:'⭕',broadcast:'📢'};
+  row.innerHTML=types.map(function(t){
+    return '<span class="pk'+(t===pType?' on':'')+'" id="tp-'+t+'" onclick="pickType(\''+t+'\')">'+(icons[t]||'')+' '+t.charAt(0).toUpperCase()+t.slice(1)+'</span>';
+  }).join('');
+}
+function pickType(t){pType=t;buildTypeRow();}
+function pickStatus(s){
+  pStatus=s;
+  ['draft','scheduled','live'].forEach(function(x){document.getElementById('st-'+x).className='pk'+(x===s?' on':'');});
+  document.getElementById('fld-metrics').style.display=s==='live'?'block':'none';
+}
+function pickPillar(pl){pPillar=pl;PILLARS.forEach(function(x){document.getElementById('pl-'+x).className='pk'+(x===pl?' on':'');});}
+function pickChar(c){pChar=c;CHARS.forEach(function(x){document.getElementById('cp-'+x).className='copt'+(x===c?' on-'+x:'');});}
+function buildSkuRow(){
+  document.getElementById('skurow').innerHTML=SKUKEYS().map(function(k){
+    return '<span class="pk" id="sku-'+k+'" onclick="pickSku(\''+k+'\')">'+esc(skuLabel(k))+'</span>';
+  }).join('');
+}
+function buildOwnerSelect(sel){
+  var t=state.settings.team.slice();
+  if(sel&&t.indexOf(sel)<0)t.push(sel);
+  document.getElementById('f-owner').innerHTML='<option value="">Unassigned</option>'+t.map(function(n){
+    return '<option value="'+esc(n)+'"'+(n===sel?' selected':'')+'>'+esc(n)+'</option>';
+  }).join('');
+}
+function pickSku(s,silent){
+  pSku=(pSku===s&&!silent)?'':s;
+  if(silent)pSku=s;
+  SKUKEYS().forEach(function(x){var el=document.getElementById('sku-'+x);if(el)el.className='pk'+(x===pSku?' on':'');});
+}
+function pickAudience(a){pAudience=a;['all','repeat','leads'].forEach(function(x){document.getElementById('au-'+x).className='pk'+(x===a?' on':'');});}
+
+function renderTags(){
+  var wrap=document.getElementById('tagwrap');
+  wrap.innerHTML=htags.map(function(t,i){
+    return '<span class="tagpill">'+esc(t)+'<span class="tagdel" onclick="removeTag('+i+')">×</span></span>';
+  }).join('')+'<input type="text" id="taginput" class="taginput" placeholder="Type tag, Enter…" onkeydown="tagKey(event)">';
+}
+function tagKey(e){
+  if(e.key==='Enter'||e.key===','){
+    e.preventDefault();
+    var v=e.target.value.trim().replace(/,$/,'');
+    if(v){var t=v.charAt(0)==='#'?v:'#'+v;if(htags.indexOf(t)<0){htags.push(t);renderTags();var ti=document.getElementById('taginput');if(ti)ti.focus();}}
+    else e.target.value='';
+  }else if(e.key==='Backspace'&&!e.target.value&&htags.length){htags.pop();renderTags();var ti2=document.getElementById('taginput');if(ti2)ti2.focus();}
+}
+function removeTag(i){htags.splice(i,1);renderTags();}
+
+function savePost(){
+  var hook=document.getElementById('f-hook').value.trim();
+  var date=document.getElementById('f-date').value;
+  if(!hook){toast('Add a hook or idea first',true);return;}
+  if(!date){toast('Select a date',true);return;}
+  var p={
+    date:date,platform:pPlatform,pillar:pPillar,character:pChar,type:pType,
+    sku:pSku,hook:hook,
+    caption:document.getElementById('f-caption').value.trim(),
+    tags:pPlatform==='whatsapp'?[]:htags.slice(),
+    notes:document.getElementById('f-notes').value.trim(),
+    owner:document.getElementById('f-owner').value,
+    audience:pPlatform==='whatsapp'?pAudience:'',
+    status:pStatus,
+    metrics:{
+      saves:Number(document.getElementById('m-saves').value)||0,
+      shares:Number(document.getElementById('m-shares').value)||0,
+      clicks:Number(document.getElementById('m-clicks').value)||0,
+      orders:Number(document.getElementById('m-orders').value)||0
+    }
+  };
+  if(editPostKey)state.posts[editPostKey]=p;
+  else state.posts[uid()]=p;
+  saveState();closePost();renderWeek();
+  if(document.getElementById('tab-month').style.display!=='none')renderMonth();
+  toast(editPostKey?'Post updated ✓':'Post saved ✓');
+}
+function deletePost(){
+  if(!editPostKey)return;
+  askConfirm('Delete this post permanently?',function(){
+    delete state.posts[editPostKey];
+    saveState();closePost();renderWeek();
+    if(document.getElementById('tab-month').style.display!=='none')renderMonth();
+    toast('Post deleted');
+  },'Delete');
+}
+
+/* ═══════════ IDEAS ═══════════ */
+function setFilter(f,btn){
+  ideaFilter=f;
+  document.querySelectorAll('.ifbtn').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderIdeas();
+}
+function ideaMatches(i){
+  if(ideaFilter==='all')return true;
+  if(ideaFilter.indexOf('sku:')===0)return i.sku===ideaFilter.split(':')[1];
+  return i.pillar===ideaFilter;
+}
+function gateText(g){
+  var parts=[];if(g.trust)parts.push('trust');if(g.usage)parts.push('usage');if(g.conversion)parts.push('conversion');
+  return parts.length?('✓ Passes: '+parts.join(' · ')):'✗ Fails go/no-go';
+}
+function renderSkuFilterBtns(){
+  var c=document.getElementById('skuFilterBtns');
+  c.innerHTML=SKUKEYS().map(function(k){
+    var lbl=skuLabel(k).replace(/^[^A-Za-z]*/,'').split(' ')[0]||k;
+    return '<button class="ifbtn'+(ideaFilter==='sku:'+k?' on':'')+'" onclick="setFilter(\'sku:'+k+'\',this)">'+esc(lbl)+'</button>';
+  }).join('');
+}
+function renderIdeas(){
+  renderSkuFilterBtns();
+  var act=document.getElementById('igrid'),park=document.getElementById('pgrid');
+  var list=state.ideas.filter(ideaMatches);
+  var active=list.filter(function(i){return !i.parked;});
+  var parked=list.filter(function(i){return i.parked;});
+  document.getElementById('activeCount').textContent=active.length+' idea'+(active.length===1?'':'s');
+  act.innerHTML=active.length?'':'<div class="empty">💡<br>Nothing here for this filter. Add ideas or copy the ideas prompt into your AI.</div>';
+  park.innerHTML=parked.length?'':'<div class="empty" style="padding:1.2rem">Nothing parked. Good sign.</div>';
+  active.forEach(function(i){act.appendChild(ideaCard(i));});
+  parked.forEach(function(i){park.appendChild(ideaCard(i));});
+  /* stats */
+  var sched=0;Object.keys(state.posts).forEach(function(k){if(state.posts[k].status==='scheduled')sched++;});
+  var skuSet={};state.ideas.forEach(function(i){if(i.sku)skuSet[i.sku]=1;});
+  document.getElementById('istats').innerHTML=
+    stat('Ideas banked',state.ideas.length,'total')+
+    stat('Active',state.ideas.filter(function(i){return !i.parked;}).length,'pass go/no-go')+
+    stat('Parked',state.ideas.filter(function(i){return i.parked;}).length,'need rework')+
+    stat('SKUs covered',Object.keys(skuSet).length,'of '+SKUKEYS().length+' SKUs');
+}
+function ideaCard(i){
+  var d=document.createElement('div');d.className='icard';
+  d.style.cursor='pointer';
+  d.onclick=function(){viewIdea(i.id);};
+  d.innerHTML='<div class="icard-top"><div class="ibadges">'
+    +'<span class="badge badge-tag">'+PLABEL[i.pillar]+'</span>'
+    +'<span class="badge '+(CBADGE[i.character]||'badge-b')+'">'+CLABEL[i.character]+'</span>'
+    +(i.sku?'<span class="badge badge-sku">'+i.sku+'</span>':'')
+    +'</div></div>'
+    +'<div class="ititle">'+esc(i.title)+'</div>'
+    +(i.desc?'<div class="idesc">'+esc(i.desc)+'</div>':'')
+    +'<div class="gwhy'+(i.parked?' fail':'')+'">'+gateText(i.gates)+'</div>';
+  var foot=document.createElement('div');foot.className='ifoot';
+  if(!i.parked){
+    var sc=document.createElement('button');sc.className='minibtn';sc.textContent='📅 Schedule';
+    sc.onclick=function(e){e.stopPropagation();scheduleIdea(i.id);};
+    foot.appendChild(sc);
+  }
+  var ed=document.createElement('button');ed.className='minibtn';ed.textContent=i.parked?'✏️ Rework':'✏️ Edit';
+  ed.onclick=function(e){e.stopPropagation();openIdeaModal(i.id);};
+  foot.appendChild(ed);
+  var del=document.createElement('button');del.className='minibtn d';del.textContent='🗑';
+  del.onclick=function(e){e.stopPropagation();askConfirm('Delete this idea?',function(){state.ideas=state.ideas.filter(function(x){return x.id!==i.id;});saveState();renderIdeas();toast('Idea deleted');},'Delete');};
+  foot.appendChild(del);
+  d.appendChild(foot);
+  return d;
+}
+function scheduleIdea(id){
+  var i=null;state.ideas.forEach(function(x){if(x.id===id)i=x;});
+  if(!i)return;
+  /* Opens the full post modal pre-filled — no prompt() dialogs */
+  state.ideas=state.ideas.filter(function(x){return x.id!==id;});
+  saveState();
+  openPost(fmt(today()),null);
+  pickPillar(i.pillar||'usage');
+  pickChar(i.character||'b');
+  pickSku(i.sku||'',true);
+  document.getElementById('f-hook').value=i.title+(i.desc?(' — '+i.desc):'');
+  toast('Set the date and save — idea moved to post ✓');
+  renderIdeas();
+}
+function openIdeaModal(id){
+  editIdeaId=id||null;
+  var i=null;if(id)state.ideas.forEach(function(x){if(x.id===id)i=x;});
+  document.getElementById('i-title').value=i?i.title:'';
+  document.getElementById('i-desc').value=i?(i.desc||''):'';
+  pickIPillar(i?(i.pillar||'usage'):'usage');
+  pickIChar(i?(i.character||'b'):'b');
+  buildISkuRow();
+  pickISku(i?(i.sku||''):'',true);
+  document.getElementById('g-trust').checked=i?!!i.gates.trust:false;
+  document.getElementById('g-usage').checked=i?!!i.gates.usage:false;
+  document.getElementById('g-conv').checked=i?!!i.gates.conversion:false;
+  document.getElementById('idea-mtitle').textContent=id?'Edit idea':'Add idea';
+  document.getElementById('del-idea-btn').style.display=id?'inline-flex':'none';
+  document.getElementById('idea-ov').classList.add('on');
+}
+function closeIdeaModal(){document.getElementById('idea-ov').classList.remove('on');}
+function pickIPillar(pl){iPillar=pl;PILLARS.forEach(function(x){document.getElementById('ipl-'+x).className='pk'+(x===pl?' on':'');});}
+function pickIChar(c){iChar=c;CHARS.forEach(function(x){document.getElementById('icp-'+x).className='copt'+(x===c?' on-'+x:'');});}
+function buildISkuRow(){
+  document.getElementById('iskurow').innerHTML=SKUKEYS().map(function(k){
+    return '<span class="pk" id="isku-'+k+'" onclick="pickISku(\''+k+'\')">'+esc(skuLabel(k))+'</span>';
+  }).join('');
+}
+function pickISku(s,silent){
+  iSku=(iSku===s&&!silent)?'':s;
+  if(silent)iSku=s;
+  SKUKEYS().forEach(function(x){var el=document.getElementById('isku-'+x);if(el)el.className='pk'+(x===iSku?' on':'');});
+}
+function saveIdea(){
+  var title=document.getElementById('i-title').value.trim();
+  if(!title){toast('Add a title first',true);return;}
+  var gates={trust:document.getElementById('g-trust').checked,usage:document.getElementById('g-usage').checked,conversion:document.getElementById('g-conv').checked};
+  var parked=!gates.trust&&!gates.usage&&!gates.conversion;
+  var idea={id:editIdeaId||uid(),title:title,desc:document.getElementById('i-desc').value.trim(),pillar:iPillar,character:iChar,sku:iSku,gates:gates,parked:parked,created:fmt(today())};
+  if(editIdeaId){
+    state.ideas=state.ideas.map(function(x){return x.id===editIdeaId?idea:x;});
+  }else state.ideas.unshift(idea);
+  saveState();closeIdeaModal();renderIdeas();
+  toast(parked?'Idea parked — no go/no-go box ticked':'Idea saved ✓');
+}
+function deleteIdea(){
+  if(!editIdeaId)return;
+  askConfirm('Delete this idea?',function(){
+    state.ideas=state.ideas.filter(function(x){return x.id!==editIdeaId;});
+    saveState();closeIdeaModal();renderIdeas();toast('Idea deleted');
+  },'Delete');
+}
+
+/* ═══════════ MONTHLY ═══════════ */
+function shiftMonth(d){monthOff+=d;closeDayPanel();renderMonth();}
+function renderMonth(){
+  var t=today();
+  var base=new Date(t.getFullYear(),t.getMonth()+monthOff,1);
+  document.getElementById('mlabel').textContent=MOS[base.getMonth()]+' '+base.getFullYear();
+  var mPrefix=base.getFullYear()+'-'+String(base.getMonth()+1).padStart(2,'0');
+  var mp=[];Object.keys(state.posts).forEach(function(k){if(state.posts[k].date&&state.posts[k].date.indexOf(mPrefix)===0)mp.push(state.posts[k]);});
+  var live=mp.filter(function(p){return p.status==='live';});
+  var liveIG=live.filter(function(p){return p.platform!=='whatsapp';});
+  var waN=mp.filter(function(p){return p.platform==='whatsapp';}).length;
+  document.getElementById('mstats').innerHTML=
+    stat('Planned',mp.length,MOS[base.getMonth()])+
+    stat('Live',live.length,'published')+
+    stat('WhatsApp',waN,'messages')+
+    stat('Total saves',liveIG.reduce(function(a,p){return a+(p.metrics?p.metrics.saves:0);},0),'top KPI');
+  /* grid — Monday start */
+  var grid=document.getElementById('mgrid');grid.innerHTML='';
+  var firstDow=(base.getDay()+6)%7;
+  var dim=new Date(base.getFullYear(),base.getMonth()+1,0).getDate();
+  for(var i=0;i<firstDow;i++){var prev=new Date(base);prev.setDate(i-firstDow+1);grid.appendChild(mkcell(prev,true));}
+  for(var dd=1;dd<=dim;dd++)grid.appendChild(mkcell(new Date(base.getFullYear(),base.getMonth(),dd),false));
+  var used=firstDow+dim;var rem=(7-(used%7))%7;
+  for(var j=1;j<=rem;j++)grid.appendChild(mkcell(new Date(base.getFullYear(),base.getMonth(),dim+j),true));
+  /* scoreboard */
+  renderBalanceRows('mbalrows',liveIG);
+  var tbl='<tr><th>Pillar</th><th>Saves</th><th>Shares</th><th>Clicks</th><th>Orders</th></tr>';
+  var tot={saves:0,shares:0,clicks:0,orders:0};
+  PILLARS.forEach(function(pl){
+    var s={saves:0,shares:0,clicks:0,orders:0};
+    liveIG.filter(function(p){return p.pillar===pl;}).forEach(function(p){
+      var m=p.metrics||{};s.saves+=m.saves||0;s.shares+=m.shares||0;s.clicks+=m.clicks||0;s.orders+=m.orders||0;
+    });
+    ['saves','shares','clicks','orders'].forEach(function(k){tot[k]+=s[k];});
+    tbl+='<tr><td>'+PLABEL[pl]+'</td><td>'+s.saves+'</td><td>'+s.shares+'</td><td>'+s.clicks+'</td><td>'+s.orders+'</td></tr>';
+  });
+  tbl+='<tr class="tot"><td>Total</td><td>'+tot.saves+'</td><td>'+tot.shares+'</td><td>'+tot.clicks+'</td><td>'+tot.orders+'</td></tr>';
+  document.getElementById('kpiTable').innerHTML=tbl;
+  var tp=document.getElementById('topPosts');
+  var top=liveIG.slice().sort(function(a,b){return (b.metrics?b.metrics.saves:0)-(a.metrics?a.metrics.saves:0);}).slice(0,3);
+  tp.innerHTML=top.length?'':'<div style="font-size:12px;color:var(--t3)">No live posts with metrics yet. Fill metrics on Live posts in the post editor.</div>';
+  top.forEach(function(p,idx){
+    tp.innerHTML+='<div class="top-post"><div><b style="color:var(--hd)">'+(idx+1)+'.</b> '+esc(p.hook)+' <span class="badge badge-tag">'+PLABEL[p.pillar]+'</span></div><div style="white-space:nowrap">'+(p.metrics?p.metrics.saves:0)+' saves</div></div>';
+  });
+}
+function mkcell(d,other){
+  var key=fmt(d);
+  var dp=postsOn(key);
+  var cell=document.createElement('div');
+  cell.className='ccell'+(key===fmt(today())?' today':'')+(other?' other':'');
+  var DOTC={f:'#C97A0A',b:'#1D6A3A',c:'#4A35A0',n:'#9A8A72'};
+  cell.innerHTML='<div class="cdate">'+d.getDate()+'</div><div class="cdots">'
+    +dp.map(function(kv){var v=kv[1];var c=v.platform==='whatsapp'?'#0E7A5F':(DOTC[v.character]||'#888');return '<div class="dot" style="background:'+c+'"></div>';}).join('')+'</div>';
+  if(!other){(function(dd,ddp){cell.onclick=function(){openDayPanel(dd,ddp);};})(d,dp);}
+  return cell;
+}
+function openDayPanel(d,dp){
+  currentDay=fmt(d);
+  document.getElementById('dptitle').textContent=MOS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+  var list=document.getElementById('dplist');
+  if(!dp.length)list.innerHTML='<p style="font-size:12px;color:var(--t3)">No posts planned for this day.</p>';
+  else{
+    list.innerHTML='';
+    dp.forEach(function(kv){
+      var k=kv[0],v=kv[1];
+      var item=document.createElement('div');item.className='dpitem';
+      item.innerHTML='<div class="dpitem-meta">'
+        +'<span class="badge badge-tag">'+PLABEL[v.pillar]+'</span>'
+        +(v.platform==='whatsapp'?'<span class="badge" style="background:var(--wap);color:var(--wa);border-color:var(--wab)">💬 WhatsApp</span>':'<span class="badge '+(CBADGE[v.character]||'badge-f')+'">'+CLABEL[v.character]+'</span>')
+        +'<span class="badge badge-tag">'+esc(v.type)+'</span>'
+        +'<span style="font-size:10px;color:var(--t3);margin-left:auto">'+(v.owner?'👤 '+esc(v.owner)+' · ':'')+esc(v.status)+'</span>'
+        +'</div><div class="dpitem-content">'+esc(v.hook)+'</div>';
+      var eb=document.createElement('button');eb.className='minibtn';eb.textContent='👁 View';eb.style.marginTop='7px';
+      (function(kk){eb.onclick=function(){viewPost(kk);};})(k);
+      item.appendChild(eb);
+      list.appendChild(item);
+    });
+  }
+  var panel=document.getElementById('daypanel');
+  panel.classList.add('on');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function closeDayPanel(){document.getElementById('daypanel').classList.remove('on');}
+
+/* ═══════════ VIEW MODAL ═══════════ */
+function mkBtn(label,cls,fn){var b=document.createElement('button');b.className=cls;b.textContent=label;b.onclick=fn;return b;}
+function closeView(){document.getElementById('view-ov').classList.remove('on');}
+function viewPost(key){
+  var p=state.posts[key];if(!p)return;
+  var isWA=p.platform==='whatsapp';
+  var b='<div class="vmeta">'
+    +'<span class="badge badge-tag">'+(isWA?'💬 WhatsApp':'📸 Instagram')+'</span>'
+    +'<span class="badge badge-tag">'+(PLABEL[p.pillar]||'')+'</span>'
+    +(isWA?'':'<span class="badge '+(CBADGE[p.character]||'badge-n')+'">'+(CLABEL[p.character]||'')+'</span>')
+    +'<span class="badge badge-tag">'+esc(p.type)+'</span>'
+    +(p.sku?'<span class="badge badge-sku">'+esc(skuLabel(p.sku))+'</span>':'')
+    +'<span class="badge badge-tag">'+esc(p.status)+'</span>'
+    +'</div>';
+  b+='<div class="vlabel">'+(isWA?'Headline':'Hook / idea')+'</div><div class="vhook">'+esc(p.hook||'—')+'</div>';
+  b+='<div class="vlabel">Date · Owner</div><div class="vtext">'+esc(p.date)+' · '+(p.owner?esc(p.owner):'Unassigned')+(isWA?' · Audience: '+esc(p.audience||'all'):'')+'</div>';
+  if(p.caption)b+='<div class="vlabel">'+(isWA?'Message body':'Caption')+'</div><div class="vtext">'+esc(p.caption)+'</div>';
+  if(!isWA&&p.tags&&p.tags.length)b+='<div class="vlabel">Hashtags</div><div class="vmeta">'+p.tags.map(function(t){return '<span class="tagpill">'+esc(t)+'</span>';}).join('')+'</div>';
+  if(p.notes)b+='<div class="vlabel">Team / filming notes</div><div class="vtext">'+esc(p.notes)+'</div>';
+  if(p.status==='live'){var m=p.metrics||{};
+    b+='<div class="vlabel">Metrics</div><div class="vtext">Saves '+(m.saves||0)+' · Shares '+(m.shares||0)+' · Clicks '+(m.clicks||0)+' · Orders '+(m.orders||0)+'</div>';}
+  document.getElementById('viewTitle').textContent=isWA?'WhatsApp message':'Post';
+  document.getElementById('viewBody').innerHTML=b;
+  var foot=document.getElementById('viewFoot');foot.innerHTML='';
+  foot.appendChild(mkBtn('Close','btn',closeView));
+  foot.appendChild(mkBtn('✏️ Edit','btn btn-p',function(){closeView();openPost(null,key);}));
+  document.getElementById('view-ov').classList.add('on');
+}
+function viewIdea(id){
+  var i=null;state.ideas.forEach(function(x){if(x.id===id)i=x;});
+  if(!i)return;
+  var b='<div class="vmeta">'
+    +'<span class="badge badge-tag">'+(PLABEL[i.pillar]||'')+'</span>'
+    +'<span class="badge '+(CBADGE[i.character]||'badge-b')+'">'+(CLABEL[i.character]||'')+'</span>'
+    +(i.sku?'<span class="badge badge-sku">'+esc(skuLabel(i.sku))+'</span>':'')
+    +'</div>';
+  b+='<div class="vlabel">Idea</div><div class="vhook">'+esc(i.title)+'</div>';
+  if(i.desc)b+='<div class="vlabel">Description</div><div class="vtext">'+esc(i.desc)+'</div>';
+  b+='<div class="vlabel">Go / No-Go</div><div class="vtext"'+(i.parked?' style="color:var(--danger)"':'')+'>'+gateText(i.gates)+(i.parked?' — parked until reworked':'')+'</div>';
+  if(i.created)b+='<div class="vlabel">Added</div><div class="vtext">'+esc(i.created)+'</div>';
+  document.getElementById('viewTitle').textContent='Idea';
+  document.getElementById('viewBody').innerHTML=b;
+  var foot=document.getElementById('viewFoot');foot.innerHTML='';
+  foot.appendChild(mkBtn('Close','btn',closeView));
+  if(!i.parked)foot.appendChild(mkBtn('📅 Schedule','btn btn-h',function(){closeView();scheduleIdea(id);}));
+  foot.appendChild(mkBtn(i.parked?'✏️ Rework':'✏️ Edit','btn btn-p',function(){closeView();openIdeaModal(id);}));
+  document.getElementById('view-ov').classList.add('on');
+}
+
+/* ═══════════ COPY PROMPTS ═══════════ */
+function copyText(text,okMsg){
+  function fallback(){
+    var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');toast(okMsg);}catch(e){toast('Copy failed — select and copy manually',true);}
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){toast(okMsg);}).catch(fallback);
+  }else fallback();
+}
+
+function copyWeekPrompt(){
+  var ws=weekStart();var dates=[];var lines=[];var igCount={};PILLARS.forEach(function(p){igCount[p]=0;});
+  var igTotal=0;
+  for(var i=0;i<7;i++){
+    var d=new Date(ws);d.setDate(ws.getDate()+i);var key=fmt(d);dates.push(key);
+    var dp=postsOn(key);
+    if(dp.length){
+      dp.forEach(function(kv){var v=kv[1];
+        lines.push('- '+key+' ('+DNS[d.getDay()]+'): ['+v.platform+' · '+PLABEL[v.pillar]+' · '+(v.character?CLABEL[v.character]:'')+'] '+v.hook);
+        if(v.platform!=='whatsapp'){igCount[v.pillar]++;igTotal++;}
+      });
+    }else{
+      var th=DAY_THEME[d.getDay()];
+      lines.push('- '+key+' ('+DNS[d.getDay()]+'): EMPTY'+(th?' — theme day: '+PLABEL[th]:''));
+    }
+  }
+  var mix=PILLARS.map(function(p){return PLABEL[p]+' '+(igTotal?Math.round(igCount[p]/igTotal*100):0)+'% (target '+TARGET[p]+'%)';}).join(', ');
+  var prompt='I\'m planning Makrand Honey\'s content week. Full brand context, characters, SKUs, pillars and rules are in this project\'s files (Makrand Content Engine Kit + brand guides) — follow them strictly.\n\n'
+    +'WEEK: '+dates[0]+' to '+dates[6]+'\n\n'
+    +'CURRENT PLAN:\n'+lines.join('\n')+'\n\n'
+    +'CURRENT INSTAGRAM PILLAR MIX vs TARGET: '+mix+'\n\n'
+    +'TASK: Create Instagram posts for the EMPTY days only (do not touch existing posts). Move the pillar mix toward targets. Respect each day\'s theme where given. Every post must pass the go/no-go test (builds trust OR increases usage OR improves conversion).\n\n'
+    +'We\'ll iterate first. When I say "final", reply with ONLY a JSON array in a code block, one object per post, exactly this schema:\n'+postSchema()+'\n\n'
+    +'For WhatsApp items (only if I ask for them) use this schema instead:\n'+WA_SCHEMA;
+  copyText(prompt,'Week prompt copied — paste into your AI project ✓');
+}
+
+function copyIdeasPrompt(){
+  var have=state.ideas.filter(function(i){return !i.parked;}).slice(0,15).map(function(i){return '- ['+PLABEL[i.pillar]+'] '+i.title;});
+  var prompt='I need fresh content ideas for Makrand Honey. Full brand context is in this project\'s files (Makrand Content Engine Kit + brand guides) — follow them strictly.\n\n'
+    +'IDEAS WE ALREADY HAVE (don\'t repeat these):\n'+(have.length?have.join('\n'):'(none yet)')+'\n\n'
+    +'TASK: Generate 6-8 new ideas spread across the pillars (usage 40%, trust 25%, product 20%, founder 10%, farm 5%). Each must name a specific visual, angle or proof point — nothing generic. Each must pass the go/no-go test, and you must mark which gates it passes honestly.\n\n'
+    +'We\'ll iterate first. When I say "final", reply with ONLY a JSON array in a code block, one object per idea, exactly this schema:\n'+ideaSchema();
+  copyText(prompt,'Ideas prompt copied — paste into your AI project ✓');
+}
+
+function copyScriptPrompt(){
+  var hook=document.getElementById('f-hook').value.trim();
+  if(!hook){toast('Add a hook or idea first',true);return;}
+  var isWA=pPlatform==='whatsapp';
+  var prompt;
+  if(isWA){
+    prompt='Write a WhatsApp '+pType+' message for Makrand Honey. Full brand context is in this project\'s files — follow it strictly.\n\n'
+      +'IDEA: '+hook+'\nPILLAR: '+PLABEL[pPillar]+'\nAUDIENCE: '+pAudience+(pSku?'\nSKU: '+pSku:'')+'\n\n'
+      +'Rules: warm and personal, Hinglish, short (WhatsApp attention span), one clear CTA, never pushy, never discount-led. Give me the message text ready to paste.';
+  }else{
+    prompt='Write a complete Instagram '+pType+' script for Makrand Honey. Full brand context, characters and SKU proof points are in this project\'s files — follow them strictly.\n\n'
+      +'IDEA / HOOK: '+hook+'\nPILLAR: '+PLABEL[pPillar]+'\nCHARACTER: '+CLABEL[pChar]+(pSku?'\nSKU: '+pSku:'')+'\n\n'
+      +'FORMAT: 1) Opening hook under 12 words (visceral, Hinglish). 2) 5-6 scenes — each one visual action or one line, mark who speaks and camera direction. 3) Caption: max 5 lines, one CTA, Hinglish + hashtags. 4) One-line filming note.\n\n'
+      +'Must pass the go/no-go test. We\'ll iterate — give me the first version now.';
+  }
+  copyText(prompt,'Script prompt copied — paste into your AI project ✓');
+}
+
+/* ═══════════ IMPORT ═══════════ */
+function openImport(){
+  document.getElementById('importbox').value='';
+  document.getElementById('importPreview').className='preview';
+  document.getElementById('importBtn').disabled=true;
+  document.getElementById('importBtn').textContent='Import 0 items';
+  importItems=null;importKind=null;
+  document.getElementById('import-ov').classList.add('on');
+}
+function closeImport(){document.getElementById('import-ov').classList.remove('on');}
+
+function parseLoose(text){
+  var clean=text.replace(/```json/gi,'').replace(/```/g,'').trim();
+  try{var r=JSON.parse(clean);return r;}catch(e){}
+  function extract(s,open,close){
+    var start=s.indexOf(open);if(start<0)return null;
+    var depth=0,inStr=false,escp=false;
+    for(var i=start;i<s.length;i++){
+      var ch=s[i];
+      if(inStr){if(escp)escp=false;else if(ch==='\\')escp=true;else if(ch==='"')inStr=false;continue;}
+      if(ch==='"')inStr=true;
+      else if(ch===open)depth++;
+      else if(ch===close){depth--;if(depth===0)return s.slice(start,i+1);}
+    }
+    return null;
+  }
+  var arr=extract(clean,'[',']');
+  if(arr){try{return JSON.parse(arr);}catch(e){}try{return JSON.parse(arr.replace(/,(\s*[\]}])/g,'$1'));}catch(e){}}
+  var obj=extract(clean,'{','}');
+  if(obj){try{return [JSON.parse(obj)];}catch(e){}}
+  return null;
+}
+
+function previewImport(){
+  var text=document.getElementById('importbox').value;
+  var pv=document.getElementById('importPreview');
+  var btn=document.getElementById('importBtn');
+  importItems=null;importKind=null;
+  btn.disabled=true;btn.textContent='Import 0 items';
+  if(!text.trim()){pv.className='preview';return;}
+  var parsed=parseLoose(text);
+  if(!parsed){pv.className='preview on';pv.innerHTML='<span class="warn">Couldn\'t find valid JSON in the paste. Ask your AI: "give me only the JSON array in a code block" and paste again.</span>';return;}
+  if(!Array.isArray(parsed))parsed=[parsed];
+  parsed=parsed.filter(function(x){return x&&typeof x==='object';});
+  if(!parsed.length){pv.className='preview on';pv.innerHTML='<span class="warn">JSON found but it contains no items.</span>';return;}
+  var isPosts=parsed.every(function(x){return x.date;});
+  var isIdeas=parsed.every(function(x){return x.title&&!x.date;});
+  if(!isPosts&&!isIdeas){pv.className='preview on';pv.innerHTML='<span class="warn">Mixed or unrecognised items. Posts need a "date"; ideas need a "title" and no date. Import them separately.</span>';return;}
+  var html='';var valid=[];
+  if(isPosts){
+    importKind='posts';
+    var perDay={},perPillar={},bad=0;
+    parsed.forEach(function(x){
+      var nd=normDate(x.date);
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(nd)){bad++;return;}
+      x=Object.assign({},x,{date:nd});
+      var platform=x.platform==='whatsapp'?'whatsapp':'instagram';
+      var pillar=PILLARS.indexOf(x.pillar)>=0?x.pillar:'usage';
+      var validTypes=platform==='whatsapp'?WA_TYPES:IG_TYPES;
+      var type=validTypes.indexOf(x.type)>=0?x.type:validTypes[0];
+      var sku=SKUKEYS().indexOf(x.sku)>=0?x.sku:'';
+      valid.push({date:x.date,platform:platform,pillar:pillar,
+        character:CHARS.indexOf(x.character)>=0?x.character:(platform==='whatsapp'?'n':'f'),
+        type:type,sku:sku,hook:String(x.hook||x.title||'').slice(0,300),
+        caption:String(x.caption||''),tags:Array.isArray(x.tags)?x.tags.map(String):[],
+        notes:String(x.notes||''),owner:'',audience:platform==='whatsapp'?(['all','repeat','leads'].indexOf(x.audience)>=0?x.audience:'all'):'',
+        status:'draft',metrics:{saves:0,shares:0,clicks:0,orders:0}});
+      perDay[x.date]=(perDay[x.date]||0)+1;
+      perPillar[pillar]=(perPillar[pillar]||0)+1;
+    });
+    html='<b>'+valid.length+' posts</b> ready to import'+(bad?' <span class="warn">('+bad+' skipped — bad date)</span>':'')+'<br>';
+    html+='Pillars: '+PILLARS.filter(function(p){return perPillar[p];}).map(function(p){return PLABEL[p]+' '+perPillar[p];}).join(' · ')+'<br>';
+    var collisions=Object.keys(perDay).filter(function(d){return postsOn(d).length>0;});
+    if(collisions.length)html+='<span class="warn">Note: '+collisions.length+' day(s) already have posts — imports will be added alongside, nothing replaced.</span><br>';
+    html+='All imported as <b>Draft</b>.';
+  }else{
+    importKind='ideas';
+    parsed.forEach(function(x){
+      var g=x.gates&&typeof x.gates==='object'?x.gates:{};
+      var gates={trust:!!g.trust,usage:!!g.usage,conversion:!!g.conversion};
+      valid.push({id:uid(),title:String(x.title).slice(0,200),desc:String(x.desc||''),
+        pillar:PILLARS.indexOf(x.pillar)>=0?x.pillar:'usage',
+        character:CHARS.indexOf(x.character)>=0?x.character:'b',
+        sku:SKUKEYS().indexOf(x.sku)>=0?x.sku:'',
+        gates:gates,parked:!gates.trust&&!gates.usage&&!gates.conversion,created:fmt(today())});
+    });
+    var parkedN=valid.filter(function(v){return v.parked;}).length;
+    html='<b>'+valid.length+' ideas</b> ready to import.<br>';
+    if(parkedN)html+='<span class="warn">'+parkedN+' will land in Parked (no go/no-go gate marked true).</span>';
+    else html+='All pass the go/no-go filter.';
+  }
+  importItems=valid;
+  pv.className='preview on';pv.innerHTML=html;
+  btn.disabled=!valid.length;
+  btn.textContent='Import '+valid.length+' '+(importKind==='posts'?'posts':'ideas');
+}
+function confirmImport(){
+  if(!importItems||!importItems.length)return;
+  if(importKind==='posts')importItems.forEach(function(p){state.posts[uid()]=p;});
+  else importItems.forEach(function(i){state.ideas.unshift(i);});
+  saveState();closeImport();
+  renderWeek();renderIdeas();
+  if(document.getElementById('tab-month').style.display!=='none')renderMonth();
+  toast(importItems.length+' '+(importKind==='posts'?'posts':'ideas')+' imported ✓');
+  importItems=null;
+}
+
+/* ═══════════ TEAM & SKU SETTINGS ═══════════ */
+function renderTeam(){
+  var el=document.getElementById('teamList');el.innerHTML='';
+  var t=state.settings.team;
+  if(!t.length){el.innerHTML='<div style="font-size:12px;color:var(--t3);margin-bottom:6px">No members yet — add the team so posts can carry an owner.</div>';return;}
+  t.forEach(function(n){
+    var cnt=0;Object.keys(state.posts).forEach(function(k){if(state.posts[k].owner===n)cnt++;});
+    var row=document.createElement('div');row.className='listrow';
+    row.innerHTML='<span>👤 '+esc(n)+' <span style="color:var(--t3)">· '+cnt+' post'+(cnt===1?'':'s')+'</span></span>';
+    var rm=document.createElement('button');rm.className='minibtn d';rm.textContent='Remove';
+    rm.onclick=function(){
+      askConfirm('Remove '+n+' from the team list? Their name stays on existing posts.',function(){
+        state.settings.team=state.settings.team.filter(function(x){return x!==n;});
+        saveState();renderTeam();toast(n+' removed');
+      },'Remove');
+    };
+    row.appendChild(rm);el.appendChild(row);
+  });
+}
+function addTeamMember(){
+  var inp=document.getElementById('teamName');var n=inp.value.trim();
+  if(!n){toast('Type a name first',true);return;}
+  if(state.settings.team.indexOf(n)>=0){toast('Already on the list',true);return;}
+  state.settings.team.push(n);saveState();inp.value='';renderTeam();toast(n+' added ✓');
+}
+function slugSku(label){
+  var s=label.toLowerCase().replace(/[^a-z]+/g,' ').trim();
+  return s?s.split(' ')[0]:'';
+}
+function addSku(){
+  var inp=document.getElementById('skuLabel');var label=inp.value.trim();
+  if(!label){toast('Type the SKU name first',true);return;}
+  var key=slugSku(label);
+  if(!key){toast('Name needs at least one letter',true);return;}
+  if(state.settings.skus[key]){toast('A SKU with key "'+key+'" already exists',true);return;}
+  state.settings.skus[key]=label;
+  saveState();inp.value='';renderSkuList();
+  toast(label+' added — remember to add its proof points to the AI kit');
+}
+function renderSkuList(){
+  var el=document.getElementById('skuList');el.innerHTML='';
+  SKUKEYS().forEach(function(k){
+    var used=0;
+    Object.keys(state.posts).forEach(function(pk){if(state.posts[pk].sku===k)used++;});
+    state.ideas.forEach(function(i){if(i.sku===k)used++;});
+    var row=document.createElement('div');row.className='listrow';
+    row.innerHTML='<span>'+esc(skuLabel(k))+' <span style="color:var(--t3)">· key: '+k+' · used '+used+'×</span></span>';
+    var rm=document.createElement('button');rm.className='minibtn d';rm.textContent='Remove';
+    rm.onclick=function(){
+      var msg='Remove '+skuLabel(k)+'?'+(used?' '+used+' post(s)/idea(s) keep the tag, but it stops appearing as a button.':'');
+      askConfirm(msg,function(){
+        delete state.settings.skus[k];
+        saveState();renderSkuList();toast('SKU removed');
+      },'Remove');
+    };
+    row.appendChild(rm);el.appendChild(row);
+  });
+}
+
+/* ═══════════ SHEETS SYNC ═══════════ */
+function syncMsg(text,ok){var el=document.getElementById('syncMsg');el.textContent=text;el.className='statusmsg '+(ok?'ok':'err');}
+function checkScriptUrl(url){
+  if(!url)return null;
+  if(url.indexOf('/dev')===url.length-4||url.indexOf('/dev?')>=0)
+    return 'That\'s the test URL (ends in /dev) — it only works for you, logged in. Use Deploy → New deployment → Web app, and copy the URL ending in /exec.';
+  if(url.indexOf('script.google.com')>=0&&url.indexOf('/exec')<0)
+    return 'The URL should end in /exec. Copy the Web app URL from Deploy → Manage deployments.';
+  return null;
+}
+function saveUrl(){
+  var url=document.getElementById('scriptUrl').value.trim();
+  var problem=checkScriptUrl(url);
+  if(problem){syncMsg(problem,false);return;}
+  state.settings.scriptUrl=url;
+  saveState();
+  syncMsg(url?'URL saved. You can Push and Pull now.':'URL cleared — dashboard is local only.',true);
+}
+function postsArray(){var out=[];Object.keys(state.posts).forEach(function(k){var p=Object.assign({id:k},state.posts[k]);out.push(p);});return out;}
+function pushSheet(){
+  if(!state.settings.scriptUrl){syncMsg('Save the Apps Script URL first.',false);return;}
+  var problem=checkScriptUrl(state.settings.scriptUrl);
+  if(problem){syncMsg(problem,false);return;}
+  syncMsg('Pushing…',true);
+  fetch(state.settings.scriptUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({action:'save',data:{posts:postsArray(),ideas:state.ideas,settings:{repeatRate:state.settings.repeatRate,team:JSON.stringify(state.settings.team||[]),skus:JSON.stringify(state.settings.skus||{})}}})
+  }).then(function(r){return r.json();}).then(function(out){
+    if(out.ok)syncMsg('Pushed — '+Object.keys(state.posts).length+' posts, '+state.ideas.length+' ideas.',true);
+    else syncMsg('Sheet said: '+(out.error||'unknown error'),false);
+  }).catch(function(e){syncMsg('Push failed: '+e.message+'. Check the URL and that the script is deployed for "Anyone".',false);});
+}
+function pullSheet(){
+  if(!state.settings.scriptUrl){syncMsg('Save the Apps Script URL first.',false);return;}
+  var problem=checkScriptUrl(state.settings.scriptUrl);
+  if(problem){syncMsg(problem,false);return;}
+  askConfirm('Pull replaces this browser\'s posts and ideas with the Sheet\'s data. Continue?',doPull,'Pull');
+}
+function doPull(){
+  syncMsg('Pulling…',true);
+  fetch(state.settings.scriptUrl+'?action=load').then(function(r){return r.json();}).then(function(out){
+    if(out.ok){
+      var d=out.data||{};
+      state.posts={};
+      (d.posts||[]).forEach(function(p){var id=p.id||uid();var q=Object.assign({},p);delete q.id;q.date=normDate(q.date);state.posts[id]=q;});
+      state.ideas=d.ideas||[];
+      if(d.settings){
+        if(d.settings.repeatRate!==undefined)state.settings.repeatRate=Number(d.settings.repeatRate)||0;
+        try{if(d.settings.team){var tm=JSON.parse(d.settings.team);if(Array.isArray(tm))state.settings.team=tm;}}catch(e2){}
+        try{if(d.settings.skus){var sk=JSON.parse(d.settings.skus);if(sk&&typeof sk==='object'&&Object.keys(sk).length)state.settings.skus=sk;}}catch(e3){}
+      }
+      saveState();renderGate();renderWeek();renderIdeas();
+      if(document.getElementById('tab-sync').style.display!=='none'){renderTeam();renderSkuList();}
+      if(document.getElementById('tab-month').style.display!=='none')renderMonth();
+      syncMsg('Pulled — '+Object.keys(state.posts).length+' posts, '+state.ideas.length+' ideas.',true);
+    }else syncMsg('Sheet said: '+(out.error||'unknown error'),false);
+  }).catch(function(e){syncMsg('Pull failed: '+e.message,false);});
+}
+
+/* ═══════════ IN-APP CONFIRM ═══════════ */
+var _confirmCb=null;
+function askConfirm(msg,onYes,yesLabel){
+  _confirmCb=onYes;
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmYesBtn').textContent=yesLabel||'Confirm';
+  document.getElementById('confirm-ov').classList.add('on');
+}
+function confirmYes(){var cb=_confirmCb;_confirmCb=null;document.getElementById('confirm-ov').classList.remove('on');if(cb)cb();}
+function confirmNo(){_confirmCb=null;document.getElementById('confirm-ov').classList.remove('on');}
+
+/* ═══════════ TOAST + INIT ═══════════ */
+function toast(msg,err){
+  var el=document.getElementById('toast');
+  el.textContent=msg;
+  el.style.background=err?'#B91C1C':'#1A1008';
+  el.classList.add('on');
+  clearTimeout(el._t);
+  el._t=setTimeout(function(){el.classList.remove('on');},3200);
+}
+
+document.getElementById('scriptUrl').value=state.settings.scriptUrl||'';
+renderGate();
+renderWeek();
+renderIdeas();
+</script>
+</body>
+</html>
